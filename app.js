@@ -37,7 +37,7 @@ console.log(aladinApiKey);
 const aladinApiBaseUrl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx";
 const aladinApiSearchUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx";
 const aladinApiLookUpUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
-const naverApiBaseUrl = "https://openapi.naver.com/v1/search/book_adv";
+const naverApiBaseUrl = "https://openapi.naver.com/v1/search/book_adv.json";
 
 //1. 알라딘 api쪽에서 허용도메인 입력 (localholst: 8080)
 //2. api url 가지고 thunderclient test
@@ -45,9 +45,11 @@ const naverApiBaseUrl = "https://openapi.naver.com/v1/search/book_adv";
 // 비동기 데이터 패치 함수
 const fetchData = async (url, headers = {}) => {
   try {
+    console.log("url, headers", url, headers);
     const response = await axios.get(url, { headers });
     return response.data;
   } catch (error) {
+    console.log(error.response.message);
     throw new Error("에러 발생");
   }
 };
@@ -121,20 +123,6 @@ app.get("/BlogBest", async (req, res) => {
   }
 });
 
-//상세페이지 ISBN으로 불러오는 책
-app.get(`/:${itemId}`, async (req, res) => {
-  const queryType = `${itemId}`;
-  const aladinApiUrl = `${aladinApiBaseUrl}?ttbkey=${aladinApiKey}&itemIdType=ISBN&ItemId=${queryType}&output=xml&Version=20131101&OptResult=ebookList,usedList,reviewList
-  `;
-
-  try {
-    const data = await fetchData(aladinApiUrl);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // 책 검색 결과를 가져오는 라우트
 app.get("/search", async (req, res) => {
   try {
@@ -150,7 +138,7 @@ app.get("/search", async (req, res) => {
     }
 
     if (isbn) {
-      naverApiUrl = `${naverApiBaseUrl}?query=${isbn}`;
+      naverApiUrl = `${naverApiBaseUrl}?d_isbn=${isbn}`;
       aladinApiUrl = `${aladinApiLookUpUrl}?ttbkey=${aladinApiKey}&itemIdType=ISBN&ItemId=${isbn}&output=js&Cover=Big&Version=20131101&CategoryId`;
     } else {
       naverApiUrl = `${naverApiBaseUrl}?query=${encodeURIComponent(
@@ -166,13 +154,23 @@ app.get("/search", async (req, res) => {
       "X-Naver-Client-Secret": naverClientSecret,
     };
     // 알라딘 API와 네이버 API에 동시에 데이터 요청을 보냄
-    const [naverData, aladinData] = await Promise.all([
+    /*    const [naverData, aladinData] = await Promise.all([
+      fetchData(naverApiUrl, naverHeaders),
+      fetchData(aladinApiUrl),
+    ]); */
+
+    const data = await Promise.all([
       fetchData(naverApiUrl, naverHeaders),
       fetchData(aladinApiUrl),
     ]);
+    console.log("데이터", data);
+    console.log("naverData, aladinData", naverData, aladinData);
     // 두 API로부터 받은 데이터를 JSON 형식으로 응답
     res.json({ naverData, aladinData });
+    //166번째 줄 데이터 터미널에 console.log가 찍히게끔 만들기
   } catch (error) {
+    console.log("에러", error);
+    console.log("에러", error.response);
     res.status(500).json({ error: error.message });
   }
 });
