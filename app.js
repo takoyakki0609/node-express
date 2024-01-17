@@ -128,8 +128,8 @@ app.get("/search", async (req, res) => {
   try {
     // 쿼리스트링에서 isbn과 검색어를 추출
     const { isbn, searchQuery } = req.query;
-    let naverApiUrl = "";
     let aladinApiUrl = "";
+
     // isbn 또는 검색어가 없으면 에러 응답
     if (!isbn && !searchQuery) {
       return res
@@ -138,36 +138,18 @@ app.get("/search", async (req, res) => {
     }
 
     if (isbn) {
-      naverApiUrl = `${naverApiBaseUrl}?d_isbn=${isbn}`;
       aladinApiUrl = `${aladinApiLookUpUrl}?ttbkey=${aladinApiKey}&itemIdType=ISBN&ItemId=${isbn}&output=js&Cover=Big&Version=20131101&CategoryId`;
     } else {
-      naverApiUrl = `${naverApiBaseUrl}?query=${encodeURIComponent(
-        searchQuery
-      )}`;
       aladinApiUrl = `${aladinApiSearchUrl}?ttbkey=${aladinApiKey}&Query=${encodeURIComponent(
         searchQuery
       )}&MaxResults=100&start=1&SearchTarget=Book&output=js&Cover=Big&Version=20131101&CategoryId`;
     }
 
-    const naverHeaders = {
-      "X-Naver-Client-Id": naverClientId,
-      "X-Naver-Client-Secret": naverClientSecret,
-    };
-    // 알라딘 API와 네이버 API에 동시에 데이터 요청을 보냄
-    /*    const [naverData, aladinData] = await Promise.all([
-      fetchData(naverApiUrl, naverHeaders),
-      fetchData(aladinApiUrl),
-    ]); */
+    // 알라딘 API에 데이터 요청을 보냄
+    const aladinData = await fetchData(aladinApiUrl);
 
-    const data = await Promise.all([
-      fetchData(naverApiUrl, naverHeaders),
-      fetchData(aladinApiUrl),
-    ]);
-    console.log("데이터", data);
-    console.log("naverData, aladinData", naverData, aladinData);
-    // 두 API로부터 받은 데이터를 JSON 형식으로 응답
-    res.json({ naverData, aladinData });
-    //166번째 줄 데이터 터미널에 console.log가 찍히게끔 만들기
+    // 알라딘 API로부터 받은 데이터를 JSON 형식으로 응답
+    res.json({ aladinData });
   } catch (error) {
     console.log("에러", error);
     console.log("에러", error.response);
