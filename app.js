@@ -121,6 +121,19 @@ app.get("/BlogBest", async (req, res) => {
   }
 });
 
+//상세페이지 ISBN으로 불러오는 책
+app.get(`/:${isbn}`, async (req, res) => {
+  const queryType = `${isbn}`;
+  const aladinApiUrl = `${aladinApiBaseUrl}?ttbkey=${aladinApiKey}&itemIdType=ISBN&ItemId=${queryType}&MaxResults=100&start=1&SearchTarget=Book&output=js&Cover=Big&Version=20131101`;
+
+  try {
+    const data = await fetchData(aladinApiUrl);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // 책 검색 결과를 가져오는 라우트
 app.get("/search", async (req, res) => {
   try {
