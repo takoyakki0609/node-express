@@ -124,7 +124,8 @@ app.get("/BlogBest", async (req, res) => {
 //상세페이지 ISBN으로 불러오는 책
 app.get(`/:${itemId}`, async (req, res) => {
   const queryType = `${itemId}`;
-  const aladinApiUrl = `${aladinApiBaseUrl}?ttbkey=${aladinApiKey}&itemIdType=ISBN&ItemId=${queryType}&MaxResults=100&start=1&SearchTarget=Book&output=js&Cover=Big&Version=20131101`;
+  const aladinApiUrl = `${aladinApiBaseUrl}?ttbkey=${aladinApiKey}&itemIdType=ISBN&ItemId=${queryType}&output=xml&Version=20131101&OptResult=ebookList,usedList,reviewList
+  `;
 
   try {
     const data = await fetchData(aladinApiUrl);
