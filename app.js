@@ -27,15 +27,11 @@ app.use(cors());
 app.use(express.json());
 
 // 환경변수에서 API 키를 불러옴
-const aladinApiKey = "ttbkjy64781735002";
-
+const aladinApiKey = process.env.REACT_APP_ALADIN_API_KEY;
 // 알라딘과 네이버 API의 기본 URL 설정
 const aladinApiBaseUrl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx";
 const aladinApiSearchUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx";
 const aladinApiLookUpUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
-
-//1. 알라딘 api쪽에서 허용도메인 입력 (localholst: 8080)
-//2. api url 가지고 thunderclient test
 
 // 비동기 데이터 패치 함수
 const fetchData = async (url, headers = {}) => {
