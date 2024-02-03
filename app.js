@@ -28,16 +28,11 @@ app.use(express.json());
 
 // 환경변수에서 API 키를 불러옴
 const aladinApiKey = "ttbkjy64781735001";
-const naverClientId = "jz8E6dsp3oeRxe34lpUt";
-const naverClientSecret = "wBSKf3_ev8";
-
-console.log(aladinApiKey);
 
 // 알라딘과 네이버 API의 기본 URL 설정
 const aladinApiBaseUrl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx";
 const aladinApiSearchUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx";
 const aladinApiLookUpUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
-const naverApiBaseUrl = "https://openapi.naver.com/v1/search/book_adv.json";
 
 //1. 알라딘 api쪽에서 허용도메인 입력 (localholst: 8080)
 //2. api url 가지고 thunderclient test
