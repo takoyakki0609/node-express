@@ -27,7 +27,7 @@ app.use(cors());
 app.use(express.json());
 
 // 환경변수에서 API 키를 불러옴
-const aladinApiKey = process.env.REACT_APP_ALADIN_API_KEY;
+const aladinApiKey = "ttbkjy64781735003";
 // 알라딘과 네이버 API의 기본 URL 설정
 const aladinApiBaseUrl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx";
 const aladinApiSearchUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx";
